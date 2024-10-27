@@ -1,6 +1,10 @@
 export function Home() {
 
     const handleLogout = () => {
+
+    }
+
+    const handleAdd = () => {
         
     }
     return(

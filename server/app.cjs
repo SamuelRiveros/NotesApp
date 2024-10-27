@@ -19,8 +19,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-// app.use('/api/users', userRoutes);
-// app.use('/api/notes', noteRoutes)
+app.use('/api/users', userRoutes);
+app.use('/api/notes', noteRoutes)
 
 //start server
 

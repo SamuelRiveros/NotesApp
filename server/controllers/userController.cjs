@@ -1,4 +1,4 @@
-const User = require('../models/userModel.cjs');
+const User = require('../schemas/User.cjs');
 const jwt = require('jsonwebtoken');
 const { formatResponse } = require('../utils/responseFormatter.cjs');
 
@@ -87,6 +87,19 @@ const userController = {
           res.status(500).json(
             formatResponse(500, 'Error en el inicio de sesión')
           );
+        }
+      },
+
+      async cerrarSesion(req, res) {
+        try {
+          const usuario = await User.findOne({ email });
+          if (!usuario) {
+            return res.status(401).json(
+              formatResponse(401, 'No hay un usuario loggeado')
+            );
+          }
+        }catch(error) {
+          console.log("Error al cerrar sesión del usuario")
         }
       },
 

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { formatResponse } = require('../utils/responseFormatter');
+const { formatResponse } = require('../utils/responseFormatter.cjs');
 
 const auth = async (req, res, next) => {
   try {

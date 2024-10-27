@@ -1,5 +1,5 @@
 const rateLimit = require('express-rate-limit');
-const { formatResponse } = require('../utils/responseFormatter');
+const { formatResponse } = require('../utils/responseFormatter.cjs');
 
 const loginLimiter = rateLimit({
   windowMs: 3 * 60 * 1000, // 3 minutos

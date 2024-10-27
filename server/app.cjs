@@ -1,14 +1,14 @@
 //dependences
 const express = require('express');
 const cors = require('cors');
-const {connection} = require('./infrastructure/db');
+const {connection} = require('./infrastructure/db.cjs');
 //load envs
 process.loadEnvFile();
 
 //*Importamos las rutas respectivas para el uso de todos los endpoints
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes.cjs');
 
-const noteRoutes = require("./routes/noteRoutes");
+const noteRoutes = require("./routes/noteRoutes.cjs");
 
 //dbConnection
 connection();

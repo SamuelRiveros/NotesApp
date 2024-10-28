@@ -13,3 +13,5 @@ router.get('/:id', rateLimiter.getLimiter, activityController.obtenerPorId);
 router.put('/:id', rateLimiter.putLimiter, activityController.actualizar);
 router.delete('/:id', rateLimiter.deleteLimiter, activityController.eliminar);
 router.get("/search", rateLimiter.getLimiter, )
+
+module.exports = router

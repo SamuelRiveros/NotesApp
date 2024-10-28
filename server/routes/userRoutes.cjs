@@ -7,4 +7,10 @@ const rateLimiter = require('../middlewares/rateLimiter.cjs'); // Middleware de 
 // Rutas públicas
 router.post('/',rateLimiter.postLimiter, userController.crear);
 router.post('/iniciarSesion',rateLimiter.loginLimiter, userController.iniciarSesion);
-router.post('/logout', userController.crear);
+
+// Rutas públicas
+router.post('/', auth, rateLimiter.postLimiter, userController.crear);
+router.post('/login', auth, rateLimiter.loginLimiter, userController.iniciarSesion);
+router.post('/logout', auth, userController.cerrarSesion);
+
+module.exports = router

@@ -71,7 +71,7 @@ export function Home() {
                 <div className="w-[90%] h-[85vh] overflow-y-scroll rounded-lg p-3 custom-scroll">
 
                     {notes.map(note => (
-                        <div key={note.id} className="note bg-pink-500 w-full rounded-lg p-3 mb-2">
+                        <div key={note._id} className="note bg-pink-500 w-full rounded-lg p-3 mb-2">
                             <h1 className="text-2xl">{note.titulo}</h1>
                         </div>
 

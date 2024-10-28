@@ -1,4 +1,5 @@
 const Note = require('../schemas/Note.cjs');
+const History = require('../schemas/History.cjs');
 const { formatResponse } = require('../utils/responseFormatter.cjs');
 const { validationResult } = require('express-validator');
 
@@ -85,13 +86,13 @@ const noteController = {
     
 
     // Actualizar una Nota
-    async actualizar (req, res) {
+    async actualizar(req, res) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(formatResponse(400,"Error de validación",errors.array()));
+                return res.status(400).json(formatResponse(400, "Error de validación", errors.array()));
             }
-
+    
             const nota = await Note.findOneAndUpdate(
                 {
                     _id: req.params.id,
@@ -100,17 +101,32 @@ const noteController = {
                 req.body,
                 { new: true }
             );
-
+    
             if (!nota) {
-                return res.status(404).json(formatResponse(404,"Nota no encontrada"));
+                return res.status(404).json(formatResponse(404, "Nota no encontrada"));
             }
+    
+            console.log("Nota actualizada:", nota); // Verifica que la nota se actualice correctamente
+    
+            // Guardar el historial
+            const historyEntry = new History({
+                nota: nota._id,
+                usuario: req.user.id,
+                titulo: nota.titulo,
+                descripcion: nota.descripcion,
+                fecha: Date.now()
+            });
 
-            return res.status(200).json(formatResponse(200,"Nota actualizada exitosamente",nota));
+            const historyGuardado = await historyEntry.save();
+    
+            console.log("Historial guardado:", historyGuardado); // Verifica que el historial se guarde correctamente
+    
+            return res.status(200).json(formatResponse(200, "Nota actualizada exitosamente", nota));
         } catch (error) {
             console.error('Error al actualizar la nota:', error);
-            return res.status(500).json(formatResponse( 500, "Error interno del servidor"));
+            return res.status(500).json(formatResponse(500, "Error interno del servidor"));
         }
-    },
+    },    
     // Eliminar una nota
     async eliminar (req, res) {
         try {

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const activitySchema = new mongoose.Schema({
+const noteSchema = new mongoose.Schema({
   usuario: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -22,4 +22,4 @@ const activitySchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Note', activitySchema);
+module.exports = mongoose.model('Note', noteSchema);

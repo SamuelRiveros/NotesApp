@@ -50,22 +50,25 @@ export function Note() {
                     "Authorization": `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ titulo, descripcion }),
+                body: JSON.stringify({ titulo, descripcion }), // Envía los nuevos valores
             });
-
+    
             if (!response.ok) {
                 throw new Error('Error al actualizar la nota');
             }
-
+    
             const data = await response.json();
-            setNote(data.data);
+            setNote(data.data); // Actualiza el estado de la nota
             setIsEditing(false); // Salir del modo edición
             setSavedChanges(false); // Ocultar el popup
-
+    
+            // Aquí podrías hacer una llamada a un método para refrescar el historial si es necesario
+    
         } catch (error) {
             setError(error.message);
         }
     };
+    
 
     const discardChanges = () => {
         setTitulo(originalNote.titulo); // Revertir al título original

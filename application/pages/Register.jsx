@@ -44,7 +44,7 @@ export function Register() {
             console.log(usuario);
     
             // Redirigir al usuario a la página principal
-            navigate('/Home');
+            navigate('/');
         } catch (error) {
             setErrorMessage('Error al iniciar sesión. Intenta de nuevo.');
         }

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { Note } from './pages/Note'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 
 const routes = createBrowserRouter([
@@ -19,7 +20,11 @@ const routes = createBrowserRouter([
   {
     path: "/Home",
     element: <Home />
-  }
+  },
+  {
+    path: "/Note",
+    element: <Note />
+  },
 ])
 
 

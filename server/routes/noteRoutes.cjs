@@ -8,8 +8,8 @@ router.use(auth);
 
 // Rutas Crud //* (requieren autenticación)
 router.post('/', rateLimiter.postLimiter, noteController.crear);
-router.get('/', rateLimiter.getLimiter, noteController.obtenerTodas);
-router.get('/:id', rateLimiter.getLimiter, noteController.obtenerPorId);
+router.get('/', noteController.obtenerTodas);
+router.get('/:id', noteController.obtenerPorId);
 router.put('/:id', rateLimiter.putLimiter, noteController.actualizar);
 router.delete('/:id', rateLimiter.deleteLimiter, noteController.eliminar);
 router.get("/search/:query", rateLimiter.getLimiter, noteController.obtenerPorTituloODescripcion);

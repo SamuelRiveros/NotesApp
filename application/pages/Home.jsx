@@ -37,6 +37,12 @@ export function Home() {
 
     const handleSearch = async () => {
         try {
+            if (!query) {
+                // Si el input está vacío, mostramos todas las notas
+                setFilteredNotes(notes);
+                return;
+            }
+    
             const response = await fetch(`http://localhost:3000/api/notes/search/${query}`, {
                 method: "GET",
                 headers: {
@@ -46,13 +52,14 @@ export function Home() {
             });
     
             if (!response.ok) {
-                throw new Error('Error al buscar notas');
+                console.log("Error al buscar nota");
+                return; // Termina la ejecución si hay un error
             }
     
             const data = await response.json();
-            
             console.log(data); // Aquí para verificar la respuesta
-            setFilteredNotes(data); // Directamente establecemos data
+    
+            setFilteredNotes(data); // Establece las notas filtradas
             setError(null); // Limpiar errores previos
         } catch (err) {
             setError(err.message);
@@ -89,6 +96,15 @@ export function Home() {
         } catch (error) {
             console.error(error);
         }
+    };
+
+    // Colores
+
+    const colors = ['#FF9E9E', '#91F48F', '#FFF599', '#9EFFFF', '#B69CFF'];
+
+    const getRandomColor = () => {
+        const randomIndex = Math.floor(Math.random() * colors.length);
+        return colors[randomIndex];
     };
 
 
@@ -135,7 +151,7 @@ export function Home() {
     }
 
     return(
-        <main>
+        <main className="w-[100vw] h-[100vh] overflow-hidden">
 
             { showInfo && (
                 <div className="absolute h-[100%] w-[100%] bg-white bg-opacity-20 flex items-center justify-center">
@@ -191,7 +207,7 @@ export function Home() {
             </div>
 
 
-            <div className="flex justify-center text-white">
+            <div className="flex justify-center text-white hidden">
                     {filteredNotes.length > 0 ? (
                         filteredNotes.map(note => (
                             <div key={note.id}>
@@ -202,17 +218,22 @@ export function Home() {
                     ) : (
                         <p>No se encontraron notas</p>
                     )}
-                </div>
+            </div>
 
             <section className="w-[100%] flex items-center justify-center flex-col">
                 <div className="w-[90%] h-[85vh] overflow-y-scroll rounded-lg p-3 custom-scroll">
 
-                    {notes.map(note => (
-                        <div key={note._id} onClick={() => navigate(`/notes/${note._id}`)} className="note bg-pink-500 w-full rounded-lg p-3 mb-2">
-                            <h1 className="text-2xl">{note.titulo}</h1>
-                        </div>
-
-                    ))}
+                {(filteredNotes.length > 0 ? filteredNotes : notes).map(note => (
+                    <div 
+                        key={note._id} 
+                        onClick={() => navigate(`/notes/${note._id}`)} 
+                        className="note w-full rounded-lg p-3 mb-2" 
+                        style={{ backgroundColor: getRandomColor() }} // Asignar color aleatorio
+                    >
+                        <h1 className="text-2xl">{note.titulo}</h1>
+                    </div>
+                ))}
+                {filteredNotes.length === 0 && query && <p className="text-white">Buscando Nota. . .</p>}
                 </div>
             </section>
 

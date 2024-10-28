@@ -13,6 +13,8 @@ Después de haber descargado las dependencias, ejecute el comando "**npm run dev
 
 Después de esto, si se conecta correctamente a la base de datos, se mostrará un mensaje el cual mostrará El día y la hora de conexión, y el mensaje " info: MongoDB Conectado: " y la dirección de la db.
 
+El siguiente paso es levantar el front-end, ejecute el comando "**npm run front**" en otra terminal diferente de la del backend para levantar el frontend, si todo sale bien, Vite le mostrará la url para conectarse, puede entrar al link presionando Ctrl + El link que le da Vite, o copiar y pegarlo en su navegador de preferencia.
+
 Tenga en cuenta que debe conectarse a la base de datos para que el consumo de apis funcione correctamente.
 
 

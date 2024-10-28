@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export function Note() {
 
@@ -17,9 +17,15 @@ export function Note() {
     const [titulo, setTitulo] = useState("");
     const [descripcion, setDescripcion] = useState("");
 
+    // Cambios
+
+    const [savedChanges, setSavedChanges] = useState(false); // Estado para el popup
+    const [originalNote, setOriginalNote] = useState({ titulo: "", descripcion: "" }); // Para guardar los valores originales
+
     //
 
     const navigate = useNavigate();
+    const infoRef = useRef(null);
 
     const handleGoBack = () => {
       navigate(-1); // -1 para ir a la página anterior
@@ -29,9 +35,14 @@ export function Note() {
         setIsEditing(true);
         setTitulo(note.titulo);
         setDescripcion(note.descripcion);
+        setOriginalNote({ titulo: note.titulo, descripcion: note.descripcion }); // Guardar los valores originales
     };
 
-    const handleSave = async () => {
+    const handleSave = () => {
+        setSavedChanges(true); // Mostrar el popup de confirmación
+    };
+
+    const confirmSave = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/notes/${id}`, {
                 method: "PUT",
@@ -39,7 +50,7 @@ export function Note() {
                     "Authorization": `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ titulo, descripcion }), // Envia los datos actualizados
+                body: JSON.stringify({ titulo, descripcion }),
             });
 
             if (!response.ok) {
@@ -49,10 +60,18 @@ export function Note() {
             const data = await response.json();
             setNote(data.data);
             setIsEditing(false); // Salir del modo edición
+            setSavedChanges(false); // Ocultar el popup
 
         } catch (error) {
             setError(error.message);
         }
+    };
+
+    const discardChanges = () => {
+        setTitulo(originalNote.titulo); // Revertir al título original
+        setDescripcion(originalNote.descripcion); // Revertir a la descripción original
+        setIsEditing(false); // Salir del modo edición
+        setSavedChanges(false); // Ocultar el popup
     };
 
     useEffect(() => {
@@ -72,6 +91,9 @@ export function Note() {
 
                 const data = await response.json();
                 setNote(data);
+                setTitulo(data.titulo);
+                setDescripcion(data.descripcion);
+                setOriginalNote({ titulo: data.titulo, descripcion: data.descripcion }); // Guardar los valores originales
 
             } catch (error) {
                 setError(error.message);
@@ -94,6 +116,40 @@ export function Note() {
 
     return(
         <main>
+
+            {/* Popup */}
+
+            { savedChanges && (
+                <div className="absolute h-[100%] w-[100%] bg-white bg-opacity-20 flex items-center justify-center">
+
+                        <div ref={infoRef} className="bg-[#252525] w-[80%] h-[25%] rounded-lg p-5 flex flex-col justify-between">
+
+                            <div className="w-[100%] flex justify-center">
+                                <div className="w-[50px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path fill="#fff" d="M4.283 2.98a1.735 1.735 0 1 1 3.434 0l-.576 4.03a1.153 1.153 0 0 1-2.282 0zM7 10a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg>
+                                </div>
+
+                            </div>
+
+                            <div className="w-[100%] flex justify-center">
+                                <p className="text-white text-xl">¿ Guardar los Cambios ?</p>
+
+                            </div>
+
+                            <div className="flex gap-3 justify-center">
+                                <button onClick={discardChanges} className="bg-red-500 rounded-md p-3">Descartar</button>
+                                <button onClick={confirmSave} className="bg-green-500 rounded-md p-3">Guardar</button>
+
+                            </div>
+
+                        </div>
+                </div>
+
+            )}
+
+
+
+
             <div className="flex justify-between p-5">
     
                 <button onClick={handleGoBack} className="bg-[#3B3B3B] p-4 h-[50px] w-[50px] flex justify-center items-center rounded-lg">

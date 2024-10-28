@@ -39,8 +39,6 @@ export function Note() {
                 const data = await response.json();
                 setNote(data);
 
-                console.log(data)
-
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -49,7 +47,7 @@ export function Note() {
         };
 
         fetchNote();
-    }, [id, token]); // Dependencias para re-fetch si el ID o el token cambian
+    }, [id, token]);
 
     if (loading) {
         return <div>Cargando...</div>;
@@ -59,7 +57,7 @@ export function Note() {
         return <div>Error: {error}</div>;
     }
 
-    
+
     return(
         <main>
             <div className="flex justify-between p-5">
@@ -76,8 +74,8 @@ export function Note() {
             </div>
 
             <div className="p-5">
-                <h1 className="titulo text-3xl text-white break-words">{note.titulo}</h1>
-                <p className="text-xl text-white pt-5 break-words">test</p>
+                <h1 className="titulo text-3xl text-white break-words"> {note.titulo || "Title"} {/* Muestra el placeholder si está vacío */}</h1>
+                <p className="text-xl text-white pt-5 break-words">{note.descripcion || "Type something..."}</p>
             </div>
 
         </main>

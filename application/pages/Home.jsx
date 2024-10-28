@@ -30,8 +30,39 @@ export function Home() {
       }
     };
 
+    // Creacion de la nota
 
-    const token = localStorage.getItem('token'); // Ajusta esto según tu implementación
+    const [titulo, setTitle] = useState("");
+    const [descripcion, setDescription] = useState("");
+
+    const createNote = async (e) => {
+        e.preventDefault(); // Evita que el formulario se recargue
+
+        try {
+            const response = await fetch('http://localhost:3000/api/notes', {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ titulo: titulo, descripcion: descripcion }), // Envía los campos vacíos
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al crear la nota');
+            }
+
+            const data = await response.json();
+            console.log(data)
+            navigate(`/notes/${data.data._id}`);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -127,7 +158,7 @@ export function Home() {
 
             <div className="absolute bottom-0 right-0 p-5">
 
-                <button className="bg-[#3B3B3B] flex items-center justify-center h-20 w-20 rounded-full shadow-xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg></button>
+                <button onClick={createNote} className="bg-[#3B3B3B] flex items-center justify-center h-20 w-20 rounded-full shadow-xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg></button>
                 
             </div>
         </main>

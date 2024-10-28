@@ -8,7 +8,7 @@ const activitySchema = new mongoose.Schema({
   },
   titulo: {
     type: String,
-    required: [true, 'El título es requerido'],
+    // required: [true, 'El título es requerido'],
     trim: true
   },
   descripcion: {

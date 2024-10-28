@@ -106,31 +106,67 @@ export function Home() {
         const randomIndex = Math.floor(Math.random() * colors.length);
         return colors[randomIndex];
     };
+    
+
+    // Eliminacion de la nota
+
+    const [selectedNoteId, setSelectedNoteId] = useState(null); // Para rastrear qué nota se está seleccionando
+
+    const handleLongPress = (noteId) => {
+        setSelectedNoteId(noteId);
+    };
+
+    const handleDeleteNote = async (noteId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/notes/${noteId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (response.ok) {
+                await fetchNotes(); // Refresca las notas después de la eliminación
+                setSelectedNoteId(null); // Resetear selección
+            } else {
+                console.log("Error al eliminar nota");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // ------------------------------------------------------------------------------------
 
 
     const token = localStorage.getItem('token');
 
-    useEffect(() => {
-        const fetchNotes = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/api/notes/', {
-                    method: "GET",
-                    headers: {
-                        "Authorization" : `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Error en la red');
+    const fetchNotes = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/api/notes/', {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    'Content-Type': 'application/json',
                 }
-                const data = await response.json();
-                setNotes(data.data); // Asume que data es un array de notas
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error en la red');
             }
-        };
+    
+            const data = await response.json();
+            setNotes(data.data); // Asume que data es un array de notas
+            setFilteredNotes(data.data); // Asegúrate de que filteredNotes se actualice también
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false); // Si tienes un estado de loading
+        }
+    };
+
+    useEffect(() => {
 
         fetchNotes();
 
@@ -226,11 +262,32 @@ export function Home() {
                 {(filteredNotes.length > 0 ? filteredNotes : notes).map(note => (
                     <div 
                         key={note._id} 
-                        onClick={() => navigate(`/notes/${note._id}`)} 
+                        onClick={() => {
+                            if (!selectedNoteId) { // Solo navegar si no hay nota seleccionada
+                                navigate(`/notes/${note._id}`);
+                            }
+                        }} 
+
+                        onContextMenu={(e) => {
+                            e.preventDefault(); // Prevenir el menú contextual del navegador
+                            handleLongPress(note._id);
+                        }}
+
                         className="note w-full rounded-lg p-3 mb-2" 
-                        style={{ backgroundColor: getRandomColor() }} // Asignar color aleatorio
+                        style={{ backgroundColor: selectedNoteId === note._id ? 'red' : getRandomColor() }} // Color rojo si está seleccionado
                     >
                         <h1 className="text-2xl">{note.titulo}</h1>
+
+                        {selectedNoteId === note._id && (
+                            <div onClick={() => handleDeleteNote(note._id)} className="flex items-center justify-center">
+                                <div className="w-[60px]">
+                                    <svg xmlns="http://www.w3.org/2000/svg"viewBox="0 0 24 24">
+                                        <path fill="#fff" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/>
+                                    </svg>
+
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
                 {filteredNotes.length === 0 && query && <p className="text-white">Buscando Nota. . .</p>}

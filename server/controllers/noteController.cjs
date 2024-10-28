@@ -42,8 +42,7 @@ const noteController = {
             const note = await Note.findOne({
                 _id: req.params.id,
                 $or: [
-                    { titulo: req.user.id },
-                    { descripcion: req.user.id }
+                    { usuario: req.user.id },
                 ]
             }).populate([
                 { path: 'usuario', select: 'nombre email' },
@@ -64,7 +63,7 @@ const noteController = {
             const { query } = req.params; // Supongamos que el término de búsqueda se pasa como parámetro
             const regex = new RegExp(query, 'i'); // Expresión regular para búsqueda insensible a mayúsculas
     
-            const notes = await Note.find({
+            const note = await Note.find({
                 $or: [
                     { titulo: regex, usuario: req.user.id },
                     { descripcion: regex, usuario: req.user.id },
@@ -73,11 +72,11 @@ const noteController = {
                 { path: 'usuario', select: 'nombre email' },
             ]);
     
-            if (notes.length === 0) {
+            if (note.length === 0) {
                 return res.status(404).json(formatResponse(400, 'No se encontraron notas'));
             }
     
-            res.json(notes);
+            res.json(note);
         } catch (error) {
             res.status(500).json(formatResponse(500, 'Error al obtener las notas', error.message));
         }

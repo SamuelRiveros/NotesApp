@@ -1,7 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-export function Note({noteId, token}) {
+export function Note() {
+
+    const { id } = useParams();
+    const token = localStorage.getItem('token'); // Obtiene el token del localStorage
 
     const [note, setNote] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -21,7 +24,7 @@ export function Note({noteId, token}) {
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/notes/${noteId}`, {
+                const response = await fetch(`http://localhost:3000/api/notes/${id}`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -34,7 +37,9 @@ export function Note({noteId, token}) {
                 }
 
                 const data = await response.json();
-                setNote(data.data);
+                setNote(data);
+
+                console.log(data)
 
             } catch (error) {
                 setError(error.message);
@@ -44,7 +49,7 @@ export function Note({noteId, token}) {
         };
 
         fetchNote();
-    }, [noteId, token]); // Dependencias para re-fetch si el ID o el token cambian
+    }, [id, token]); // Dependencias para re-fetch si el ID o el token cambian
 
     return(
         <main>
@@ -63,7 +68,7 @@ export function Note({noteId, token}) {
 
             <div className="p-5">
                 <h1 className="titulo text-3xl text-white break-words">{note.titulo}</h1>
-                <p className="text-xl text-white pt-5 break-words"></p>
+                <p className="text-xl text-white pt-5 break-words">{note.descripcion}</p>
             </div>
 
         </main>

@@ -22,7 +22,7 @@ const routes = createBrowserRouter([
     element: <Home />
   },
   {
-    path: "/Note",
+    path: "/notes/:id",
     element: <Note />
   },
 ])

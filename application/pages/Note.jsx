@@ -51,6 +51,15 @@ export function Note() {
         fetchNote();
     }, [id, token]); // Dependencias para re-fetch si el ID o el token cambian
 
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    
     return(
         <main>
             <div className="flex justify-between p-5">
@@ -68,7 +77,7 @@ export function Note() {
 
             <div className="p-5">
                 <h1 className="titulo text-3xl text-white break-words">{note.titulo}</h1>
-                <p className="text-xl text-white pt-5 break-words">{note.descripcion}</p>
+                <p className="text-xl text-white pt-5 break-words">test</p>
             </div>
 
         </main>

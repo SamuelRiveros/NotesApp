@@ -1,4 +1,10 @@
+import { useState, useEffect } from "react"
+
 export function Home() {
+
+    const [notes, setNotes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     const handleLogout = () => {
 
@@ -7,6 +13,42 @@ export function Home() {
     const handleAdd = () => {
         
     }
+
+    const token = localStorage.getItem('token'); // Ajusta esto según tu implementación
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/notes/', {
+                    method: "GET",
+                    headers: {
+                        "Authorization" : `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Error en la red');
+                }
+                const data = await response.json();
+                setNotes(data.data); // Asume que data es un array de notas
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNotes();
+    }, []);
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
     return(
         <main>
             <div className="w-100 h-[20%] p-5 flex justify-between items-center">
@@ -19,17 +61,31 @@ export function Home() {
                 </div>
             </div>
 
-            <div className="mainpic flex flex-col items-center pt-[150px] gap-3">
+            <div className="mainpic flex flex-col items-center pt-[150px] gap-3 hidden">
                 <img src="./mainpic.png"/>
                 <p className="text-white">Create your first Note !</p>
 
             </div>
 
-            <button className="absolute bottom-0 right-0 p-5">
+            <section className="w-[100%] flex items-center justify-center flex-col">
+                <div className="w-[90%] h-[85vh] overflow-y-scroll rounded-lg p-3 custom-scroll">
 
-                <div className="bg-[#3B3B3B] flex items-center justify-center h-20 w-20 rounded-full shadow-xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg></div>
+                    {notes.map(note => (
+                        <div key={note.id} className="note bg-pink-500 w-full rounded-lg p-3 mb-2">
+                            <h1 className="text-2xl">{note.titulo}</h1>
+                        </div>
+
+                    ))}
+                </div>
+            </section>
+
+
+
+            <div className="absolute bottom-0 right-0 p-5">
+
+                <button className="bg-[#3B3B3B] flex items-center justify-center h-20 w-20 rounded-full shadow-xl"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg></button>
                 
-            </button>
+            </div>
         </main>
     )
 }

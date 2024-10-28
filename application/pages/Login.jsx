@@ -37,9 +37,12 @@ export function Login() {
     
             // Acceder a los datos del usuario y el token
             const { usuario, token } = data.data; // Desestructuramos data.data
-            
+
+
             console.log(usuario);
             console.log(token);
+            
+            localStorage.setItem("token", token)
     
             // Redirigir al usuario a la página principal
             navigate('/Home');
@@ -72,6 +75,7 @@ export function Login() {
                 </div>
                 <button className="mt-4 mb-6 px-4 py-2 bg-gray-700 rounded-md hover:bg-red-600 text-white transition duration-200">Forgot Password</button>
             </Form>
+            {errorMessage && <p className="error text-white pt-3">{errorMessage}</p>}
         </div>
     )
 }

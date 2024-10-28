@@ -16,3 +16,12 @@ body, html {
     min-width: 100vw;
     background-color: #252525;
 }
+
+.custom-scroll::-webkit-scrollbar {
+    display: none; /* Ocultar barra de desplazamiento en Chrome, Safari y Opera */
+}
+
+.custom-scroll {
+    -ms-overflow-style: none;  /* Ocultar barra de desplazamiento en Internet Explorer y Edge */
+    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+}
